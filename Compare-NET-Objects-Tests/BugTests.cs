@@ -499,6 +499,19 @@ namespace KellermanSoftware.CompareNetObjectsTests
             Console.WriteLine(result.DifferencesString);
         }
 
+        [Test]
+        public void Given_two_classes_with_the_same_identity_but_where_the_to_string_method_output_does_not_represent_the_identity_When_comparing_instances_inside_a_collection_while_ignoring_collection_order_Then_the_comparison_is_equal()
+        {
+            var first = new[] {new ClassWhereToStringIsDifferentFromIdentity("identity", "not part of identity")};
+            var second = new[] {new ClassWhereToStringIsDifferentFromIdentity("identity", "also not part of identity")};
+
+            var comparisonConfig = new ComparisonConfig { MaxDifferences = 1, IgnoreCollectionOrder = true };
+            var comparer = new CompareLogic(comparisonConfig);
+
+            Assert.IsTrue(comparer.Compare(first[0], second[0]).AreEqual);
+            Assert.IsTrue(comparer.Compare(first, second).AreEqual);
+        }
+
         #if !NETSTANDARD
 
         [Test]
